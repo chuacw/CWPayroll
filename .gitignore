@@ -1,0 +1,22 @@
+# Ignore these files
+
+*.cmd
+*.txt
+
+# Ignore the build directory
+bin/
+build/
+docs/
+node_modules/
+__history/
+
+# truffle configuration
+truffle-config.js
+truffle.js
+
+package.json
+package-lock.json
+*.json
+*.old
+*.working
+*.jslatest
