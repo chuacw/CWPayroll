@@ -14,16 +14,6 @@ contract("CWPayroll", function(accounts) {
   beforeEach(() => {
     return CWPayroll.new({from: account_creator})
      .then(instance => {
-
-       events = instance.allEvents();
-       events.watch(function(error, event){
-           if (error) {
-               console.log("Error: " + error);
-           } else {
-               console.log(event.event + ": " + JSON.stringify(event.args));
-           }
-       });
-
        cwpayroll = instance;
        return instance;
      });

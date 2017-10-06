@@ -82,15 +82,8 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
   
     
     function CWPayroll() public {
-        // isDebug = getNetwork() != EthereumNetwork.enMainNet; // enable debug on any test network
-        if (isDebug)
-          __Log("Debug enabled"); else
-        {  isDebug = true;
-          __Log("Set debug true"); 
-        }
-        Log("CWPayroll created...");
-        
-        employeeId           = 1;           // Set the first available employee ID
+        // Set the first available employee ID
+        employeeId           = 1;           
         
         // Allow escape hatch for the contract creator
         fscapeHatch           = msg.sender;
@@ -234,7 +227,6 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
   function payday() public onlyOwnerOrCreator called1MonthAgo() // ensures that it can only be called 1 month after the last call
   {
-     Log('pay day for employees!');
      for (uint256 i = 0; i < employees.length; i++) {
 
          uint256 lMonthlySalary = employees[i].salary.div(12); // salary is annual, so divide by 12 to get monthly salary.
@@ -246,7 +238,6 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
          Transfer(msg.sender, lEmployeeAddr, lMonthlySalaryInUSD); // notify all interested parties...
      }
-     Log('Completed payday!');
   }
 
 // -----------------------------------------------------------------------------------------------------------------------------
@@ -263,7 +254,6 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
       // save the exchange rate
       usdExchangeRate = usdExchangeRate;
-      Log('setting exchange rate!');
     }
   
     function startExchangeRateUpdate() public payable onlyOwnerOrCreator {
@@ -282,6 +272,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
   
     function __callback(bytes32 myid, string result) public {
+      // reject invalid UID, or non-Oracle caller
       if ((!validIds[myid]) || (msg.sender != oraclize_cbAddress())) 
         revert;
 
@@ -310,7 +301,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
     }
   
   
-    function resetCalledCounters() public onlyOwnerOrCreator {
+    function resetCalledCounters() internal onlyOwnerOrCreator {
       payDayLastCall       = 0;  // reset timestamp of lastcall 
       distributionLastCall = 0;  // reset timestamp of lastcall 
     }
