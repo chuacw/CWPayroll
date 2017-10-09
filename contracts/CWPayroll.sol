@@ -9,6 +9,7 @@ import './oraclizeAPI_04.sol';
 contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
     using SafeMath for uint256;
     
+    
     bool internal isDebug;
 
     // Employee record
@@ -22,6 +23,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
     Employee[] private employees;
     uint256 employeeId;           // current max employeeId
 
+    mapping (address => mapping (address => uint)) allowed;
     address fscapeHatch;     // escape hatch
     address owner;
     uint256 usdExchangeRate;        // exchange rate for the usd token
@@ -33,6 +35,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event newOraclizeQuery(string description);
     event __Log(string msg);
+    event Approval(address indexed owner, address indexed spender, uint value);
 
 
     modifier onlyScapeHatch() {
@@ -161,6 +164,14 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
  
   // function addTokenFunds()? // Use approveAndCall or ERC223 tokenFallback
+
+    function approve(address _spender, uint _value) public {
+      //  https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+      assert(!((_value != 0) && (allowed[msg.sender][_spender] != 0)));
+      allowed[msg.sender][_spender] = _value;
+      Approval(msg.sender, _spender, _value);
+    }
+
     function addFunds() public payable {
     }
 
