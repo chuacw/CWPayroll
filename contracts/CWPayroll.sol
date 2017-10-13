@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.17;
 
 import './PayrollInterface.sol';
 import './ERC20Token.sol';
@@ -296,9 +296,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
 
     }
     
-    
-    
-    function update() payable {
+    function update() internal {
       if (msg.sender != oraclize_cbAddress()) 
         revert;
 
