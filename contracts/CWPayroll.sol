@@ -227,7 +227,7 @@ contract CWPayroll is PayrollInterface, DateTimeUtils, usingOraclize {
            address lToAddress = employees[i].allowedTokens[j];
            
            // transfer from the contract address to employee's token address. Assumes that no tokens were removed from distribution
-           lToken.transferFrom(lFromAddress, lToAddress, lValue);   
+           lToken.transferFrom(msg.sender, lToAddress, lValue);   
            lEmployeeCount--;
            Log('allocation determined!');  
          }
